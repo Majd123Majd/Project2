@@ -3,6 +3,8 @@
     public enum UserType
     {
         Customer,
-        Seller
+        Deliver,
+        Marketer,
+        Admin
     }
 }

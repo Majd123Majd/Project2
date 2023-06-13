@@ -1,11 +1,11 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Project2.Data;
-using Project2.Models;
 using System.Security.Claims;
 using Microsoft.EntityFrameworkCore;
 using Project2.Data.Enum;
 using Newtonsoft.Json;
-using Project2.Services;
+using Project2.Model;
+using Project2.Model.Entities;
+using Project2.Model.DTOs;
 
 namespace Project2.Controllers
 {

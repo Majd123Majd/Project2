@@ -2,12 +2,12 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Authorization;
-using Project2.Models;
-using Project2.Services;
 using Microsoft.AspNetCore.Authentication;
 using Project2.Data.Enum;
-using Project2.Data;
 using Newtonsoft.Json;
+using Project2.Model;
+using Project2.Model.Entities;
+using Project2.Model.DTOs;
 
 namespace Project2.Controllers
 {
@@ -66,7 +66,7 @@ namespace Project2.Controllers
                 return RedirectToAction("Index", "Home", new { userType = selectedUserType });
 
             }
-            else if (selectedUserType == UserType.Seller)
+            else if (selectedUserType == UserType.Marketer)
             {
                 var marketer = new Marketer
                 {
@@ -128,10 +128,10 @@ namespace Project2.Controllers
                     // إعادة الواجهة للزبون
                     return RedirectToAction("Index", "Home", new { userType = UserType.Customer });
                 }
-                else if (user_type == UserType.Seller)
+                else if (user_type == UserType.Marketer)
                 {
                     // إعادة الواجهة للبائع
-                    return RedirectToAction("Index", "Home", new { userType = UserType.Seller });
+                    return RedirectToAction("Index", "Home", new { userType = UserType.Marketer });
                 }
             }
             // في حالة عدم صحة بيانات الدخول

@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using Project2.Data;
+using Project2.Model;
 
 #nullable disable
 
@@ -22,7 +22,7 @@ namespace Project2.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
 
-            modelBuilder.Entity("Project2.Models.Address", b =>
+            modelBuilder.Entity("Project2.Model.Entities.Address", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -43,7 +43,7 @@ namespace Project2.Migrations
                     b.ToTable("Addresses");
                 });
 
-            modelBuilder.Entity("Project2.Models.Auction", b =>
+            modelBuilder.Entity("Project2.Model.Entities.Auction", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -79,7 +79,7 @@ namespace Project2.Migrations
                     b.ToTable("Auctions");
                 });
 
-            modelBuilder.Entity("Project2.Models.AuctionComm", b =>
+            modelBuilder.Entity("Project2.Model.Entities.AuctionComm", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -109,7 +109,7 @@ namespace Project2.Migrations
                     b.ToTable("AuctionComms");
                 });
 
-            modelBuilder.Entity("Project2.Models.Complaint", b =>
+            modelBuilder.Entity("Project2.Model.Entities.Complaint", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -144,7 +144,7 @@ namespace Project2.Migrations
                     b.ToTable("Complaints");
                 });
 
-            modelBuilder.Entity("Project2.Models.Cust_Auction", b =>
+            modelBuilder.Entity("Project2.Model.Entities.Cust_Auction", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -170,7 +170,7 @@ namespace Project2.Migrations
                     b.ToTable("Cust_Auctions");
                 });
 
-            modelBuilder.Entity("Project2.Models.Customer", b =>
+            modelBuilder.Entity("Project2.Model.Entities.Customer", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -216,7 +216,7 @@ namespace Project2.Migrations
                     b.ToTable("Customers");
                 });
 
-            modelBuilder.Entity("Project2.Models.CustOrder", b =>
+            modelBuilder.Entity("Project2.Model.Entities.CustOrder", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -242,7 +242,7 @@ namespace Project2.Migrations
                     b.ToTable("CustOrders");
                 });
 
-            modelBuilder.Entity("Project2.Models.CustPost", b =>
+            modelBuilder.Entity("Project2.Model.Entities.CustPost", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -268,7 +268,7 @@ namespace Project2.Migrations
                     b.ToTable("CustPosts");
                 });
 
-            modelBuilder.Entity("Project2.Models.Deliver", b =>
+            modelBuilder.Entity("Project2.Model.Entities.Deliver", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -308,7 +308,7 @@ namespace Project2.Migrations
                     b.ToTable("Delivers");
                 });
 
-            modelBuilder.Entity("Project2.Models.DelivOrder", b =>
+            modelBuilder.Entity("Project2.Model.Entities.DelivOrder", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -334,7 +334,7 @@ namespace Project2.Migrations
                     b.ToTable("DelivOrders");
                 });
 
-            modelBuilder.Entity("Project2.Models.FollowingPage", b =>
+            modelBuilder.Entity("Project2.Model.Entities.FollowingPage", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -360,7 +360,7 @@ namespace Project2.Migrations
                     b.ToTable("FollowingPages");
                 });
 
-            modelBuilder.Entity("Project2.Models.Friend", b =>
+            modelBuilder.Entity("Project2.Model.Entities.Friend", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -386,7 +386,7 @@ namespace Project2.Migrations
                     b.ToTable("Friends");
                 });
 
-            modelBuilder.Entity("Project2.Models.Interaction", b =>
+            modelBuilder.Entity("Project2.Model.Entities.Interaction", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -416,7 +416,7 @@ namespace Project2.Migrations
                     b.ToTable("Interactions");
                 });
 
-            modelBuilder.Entity("Project2.Models.Maintainer", b =>
+            modelBuilder.Entity("Project2.Model.Entities.Maintainer", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -442,7 +442,7 @@ namespace Project2.Migrations
                     b.ToTable("Maintainers");
                 });
 
-            modelBuilder.Entity("Project2.Models.Mark_Tender", b =>
+            modelBuilder.Entity("Project2.Model.Entities.Mark_Tender", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -468,7 +468,7 @@ namespace Project2.Migrations
                     b.ToTable("Mark_Tenders");
                 });
 
-            modelBuilder.Entity("Project2.Models.Marketer", b =>
+            modelBuilder.Entity("Project2.Model.Entities.Marketer", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -511,7 +511,7 @@ namespace Project2.Migrations
                     b.ToTable("Marketers");
                 });
 
-            modelBuilder.Entity("Project2.Models.Notification", b =>
+            modelBuilder.Entity("Project2.Model.Entities.Notification", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -536,7 +536,7 @@ namespace Project2.Migrations
                     b.ToTable("Notifications");
                 });
 
-            modelBuilder.Entity("Project2.Models.Order", b =>
+            modelBuilder.Entity("Project2.Model.Entities.Order", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -583,7 +583,7 @@ namespace Project2.Migrations
                     b.ToTable("Orders");
                 });
 
-            modelBuilder.Entity("Project2.Models.Popularization", b =>
+            modelBuilder.Entity("Project2.Model.Entities.Popularization", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -613,7 +613,7 @@ namespace Project2.Migrations
                     b.ToTable("Popularizations");
                 });
 
-            modelBuilder.Entity("Project2.Models.Post", b =>
+            modelBuilder.Entity("Project2.Model.Entities.Post", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -651,7 +651,7 @@ namespace Project2.Migrations
                     b.ToTable("Posts");
                 });
 
-            modelBuilder.Entity("Project2.Models.Product", b =>
+            modelBuilder.Entity("Project2.Model.Entities.Product", b =>
                 {
                     b.Property<int>("id")
                         .ValueGeneratedOnAdd()
@@ -677,7 +677,7 @@ namespace Project2.Migrations
                     b.ToTable("Products");
                 });
 
-            modelBuilder.Entity("Project2.Models.Role", b =>
+            modelBuilder.Entity("Project2.Model.Entities.Role", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -694,7 +694,7 @@ namespace Project2.Migrations
                     b.ToTable("Roles");
                 });
 
-            modelBuilder.Entity("Project2.Models.Search", b =>
+            modelBuilder.Entity("Project2.Model.Entities.Search", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -719,7 +719,7 @@ namespace Project2.Migrations
                     b.ToTable("Searches");
                 });
 
-            modelBuilder.Entity("Project2.Models.Tender", b =>
+            modelBuilder.Entity("Project2.Model.Entities.Tender", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -755,7 +755,7 @@ namespace Project2.Migrations
                     b.ToTable("Tenders");
                 });
 
-            modelBuilder.Entity("Project2.Models.TenderComm", b =>
+            modelBuilder.Entity("Project2.Model.Entities.TenderComm", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -785,7 +785,7 @@ namespace Project2.Migrations
                     b.ToTable("TenderComms");
                 });
 
-            modelBuilder.Entity("Project2.Models.User", b =>
+            modelBuilder.Entity("Project2.Model.Entities.User", b =>
                 {
                     b.Property<int>("UID")
                         .ValueGeneratedOnAdd()
@@ -813,9 +813,9 @@ namespace Project2.Migrations
                     b.ToTable("Users");
                 });
 
-            modelBuilder.Entity("Project2.Models.Auction", b =>
+            modelBuilder.Entity("Project2.Model.Entities.Auction", b =>
                 {
-                    b.HasOne("Project2.Models.Marketer", "Marketer")
+                    b.HasOne("Project2.Model.Entities.Marketer", "Marketer")
                         .WithMany("Auctions")
                         .HasForeignKey("MarketerId")
                         .OnDelete(DeleteBehavior.Restrict)
@@ -824,15 +824,15 @@ namespace Project2.Migrations
                     b.Navigation("Marketer");
                 });
 
-            modelBuilder.Entity("Project2.Models.AuctionComm", b =>
+            modelBuilder.Entity("Project2.Model.Entities.AuctionComm", b =>
                 {
-                    b.HasOne("Project2.Models.Auction", "Auction")
+                    b.HasOne("Project2.Model.Entities.Auction", "Auction")
                         .WithMany("AuctionComments")
                         .HasForeignKey("AuctionId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Project2.Models.Customer", "Customer")
+                    b.HasOne("Project2.Model.Entities.Customer", "Customer")
                         .WithMany("AuctionComms")
                         .HasForeignKey("CustomerId")
                         .OnDelete(DeleteBehavior.Restrict)
@@ -843,15 +843,15 @@ namespace Project2.Migrations
                     b.Navigation("Customer");
                 });
 
-            modelBuilder.Entity("Project2.Models.Complaint", b =>
+            modelBuilder.Entity("Project2.Model.Entities.Complaint", b =>
                 {
-                    b.HasOne("Project2.Models.User", "ComplainedOn")
+                    b.HasOne("Project2.Model.Entities.User", "ComplainedOn")
                         .WithMany("ComplaintsAgainst")
                         .HasForeignKey("ComplainedOnId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("Project2.Models.User", "Complainer")
+                    b.HasOne("Project2.Model.Entities.User", "Complainer")
                         .WithMany("Complaints")
                         .HasForeignKey("ComplainerId")
                         .OnDelete(DeleteBehavior.Restrict)
@@ -862,15 +862,15 @@ namespace Project2.Migrations
                     b.Navigation("Complainer");
                 });
 
-            modelBuilder.Entity("Project2.Models.Cust_Auction", b =>
+            modelBuilder.Entity("Project2.Model.Entities.Cust_Auction", b =>
                 {
-                    b.HasOne("Project2.Models.Auction", "Auction")
+                    b.HasOne("Project2.Model.Entities.Auction", "Auction")
                         .WithMany("CustAuctions")
                         .HasForeignKey("AuctionId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("Project2.Models.Customer", "Customer")
+                    b.HasOne("Project2.Model.Entities.Customer", "Customer")
                         .WithMany("CustAuctions")
                         .HasForeignKey("customerId")
                         .OnDelete(DeleteBehavior.Restrict)
@@ -881,17 +881,17 @@ namespace Project2.Migrations
                     b.Navigation("Customer");
                 });
 
-            modelBuilder.Entity("Project2.Models.Customer", b =>
+            modelBuilder.Entity("Project2.Model.Entities.Customer", b =>
                 {
-                    b.HasOne("Project2.Models.Address", "Address")
+                    b.HasOne("Project2.Model.Entities.Address", "Address")
                         .WithMany()
                         .HasForeignKey("AddressId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Project2.Models.User", "User")
+                    b.HasOne("Project2.Model.Entities.User", "User")
                         .WithOne("Customer")
-                        .HasForeignKey("Project2.Models.Customer", "userId")
+                        .HasForeignKey("Project2.Model.Entities.Customer", "userId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -900,15 +900,15 @@ namespace Project2.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("Project2.Models.CustOrder", b =>
+            modelBuilder.Entity("Project2.Model.Entities.CustOrder", b =>
                 {
-                    b.HasOne("Project2.Models.Customer", "Customer")
+                    b.HasOne("Project2.Model.Entities.Customer", "Customer")
                         .WithMany("CustOrders")
                         .HasForeignKey("CustomerId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Project2.Models.Order", "Order")
+                    b.HasOne("Project2.Model.Entities.Order", "Order")
                         .WithMany("CustOrders")
                         .HasForeignKey("OrderId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -919,15 +919,15 @@ namespace Project2.Migrations
                     b.Navigation("Order");
                 });
 
-            modelBuilder.Entity("Project2.Models.CustPost", b =>
+            modelBuilder.Entity("Project2.Model.Entities.CustPost", b =>
                 {
-                    b.HasOne("Project2.Models.Customer", "Customer")
+                    b.HasOne("Project2.Model.Entities.Customer", "Customer")
                         .WithMany("CustPosts")
                         .HasForeignKey("CustomerId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("Project2.Models.Post", "Post")
+                    b.HasOne("Project2.Model.Entities.Post", "Post")
                         .WithMany("CustPosts")
                         .HasForeignKey("PostId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -938,17 +938,17 @@ namespace Project2.Migrations
                     b.Navigation("Post");
                 });
 
-            modelBuilder.Entity("Project2.Models.Deliver", b =>
+            modelBuilder.Entity("Project2.Model.Entities.Deliver", b =>
                 {
-                    b.HasOne("Project2.Models.Address", "Address")
+                    b.HasOne("Project2.Model.Entities.Address", "Address")
                         .WithMany()
                         .HasForeignKey("AddressId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Project2.Models.User", "User")
+                    b.HasOne("Project2.Model.Entities.User", "User")
                         .WithOne("Deliver")
-                        .HasForeignKey("Project2.Models.Deliver", "userId")
+                        .HasForeignKey("Project2.Model.Entities.Deliver", "userId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -957,15 +957,15 @@ namespace Project2.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("Project2.Models.DelivOrder", b =>
+            modelBuilder.Entity("Project2.Model.Entities.DelivOrder", b =>
                 {
-                    b.HasOne("Project2.Models.Deliver", "Deliver")
+                    b.HasOne("Project2.Model.Entities.Deliver", "Deliver")
                         .WithMany("DelivOrders")
                         .HasForeignKey("DeliverId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Project2.Models.Order", "Order")
+                    b.HasOne("Project2.Model.Entities.Order", "Order")
                         .WithMany("DelivOrders")
                         .HasForeignKey("OrderId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -976,15 +976,15 @@ namespace Project2.Migrations
                     b.Navigation("Order");
                 });
 
-            modelBuilder.Entity("Project2.Models.FollowingPage", b =>
+            modelBuilder.Entity("Project2.Model.Entities.FollowingPage", b =>
                 {
-                    b.HasOne("Project2.Models.Marketer", "Marketer")
+                    b.HasOne("Project2.Model.Entities.Marketer", "Marketer")
                         .WithMany("FollowingPages")
                         .HasForeignKey("pageId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("Project2.Models.User", "User")
+                    b.HasOne("Project2.Model.Entities.User", "User")
                         .WithMany("FollowingPages")
                         .HasForeignKey("userId")
                         .OnDelete(DeleteBehavior.Restrict)
@@ -995,15 +995,15 @@ namespace Project2.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("Project2.Models.Friend", b =>
+            modelBuilder.Entity("Project2.Model.Entities.Friend", b =>
                 {
-                    b.HasOne("Project2.Models.Customer", "Customer")
+                    b.HasOne("Project2.Model.Entities.Customer", "Customer")
                         .WithMany("Friends")
                         .HasForeignKey("friendId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("Project2.Models.User", "User")
+                    b.HasOne("Project2.Model.Entities.User", "User")
                         .WithMany("Friends")
                         .HasForeignKey("userId")
                         .OnDelete(DeleteBehavior.Restrict)
@@ -1014,15 +1014,15 @@ namespace Project2.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("Project2.Models.Interaction", b =>
+            modelBuilder.Entity("Project2.Model.Entities.Interaction", b =>
                 {
-                    b.HasOne("Project2.Models.Post", "Post")
+                    b.HasOne("Project2.Model.Entities.Post", "Post")
                         .WithMany("Interactions")
                         .HasForeignKey("PostId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Project2.Models.User", "User")
+                    b.HasOne("Project2.Model.Entities.User", "User")
                         .WithMany("Interactions")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -1033,9 +1033,9 @@ namespace Project2.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("Project2.Models.Maintainer", b =>
+            modelBuilder.Entity("Project2.Model.Entities.Maintainer", b =>
                 {
-                    b.HasOne("Project2.Models.Role", "Role")
+                    b.HasOne("Project2.Model.Entities.Role", "Role")
                         .WithMany()
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -1044,15 +1044,15 @@ namespace Project2.Migrations
                     b.Navigation("Role");
                 });
 
-            modelBuilder.Entity("Project2.Models.Mark_Tender", b =>
+            modelBuilder.Entity("Project2.Model.Entities.Mark_Tender", b =>
                 {
-                    b.HasOne("Project2.Models.Marketer", "Marketer")
+                    b.HasOne("Project2.Model.Entities.Marketer", "Marketer")
                         .WithMany("MarketerTenders")
                         .HasForeignKey("MarketerId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("Project2.Models.Tender", "Tender")
+                    b.HasOne("Project2.Model.Entities.Tender", "Tender")
                         .WithMany("Mark_Tenders")
                         .HasForeignKey("TenderId")
                         .OnDelete(DeleteBehavior.Restrict)
@@ -1063,17 +1063,17 @@ namespace Project2.Migrations
                     b.Navigation("Tender");
                 });
 
-            modelBuilder.Entity("Project2.Models.Marketer", b =>
+            modelBuilder.Entity("Project2.Model.Entities.Marketer", b =>
                 {
-                    b.HasOne("Project2.Models.Address", "Address")
+                    b.HasOne("Project2.Model.Entities.Address", "Address")
                         .WithMany()
                         .HasForeignKey("AddressId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Project2.Models.User", "User")
+                    b.HasOne("Project2.Model.Entities.User", "User")
                         .WithOne("Marketer")
-                        .HasForeignKey("Project2.Models.Marketer", "userId")
+                        .HasForeignKey("Project2.Model.Entities.Marketer", "userId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -1082,9 +1082,9 @@ namespace Project2.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("Project2.Models.Notification", b =>
+            modelBuilder.Entity("Project2.Model.Entities.Notification", b =>
                 {
-                    b.HasOne("Project2.Models.User", "User")
+                    b.HasOne("Project2.Model.Entities.User", "User")
                         .WithMany()
                         .HasForeignKey("userId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -1093,29 +1093,29 @@ namespace Project2.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("Project2.Models.Order", b =>
+            modelBuilder.Entity("Project2.Model.Entities.Order", b =>
                 {
-                    b.HasOne("Project2.Models.DelivOrder", null)
+                    b.HasOne("Project2.Model.Entities.DelivOrder", null)
                         .WithMany("Orders")
                         .HasForeignKey("DelivOrderId");
 
-                    b.HasOne("Project2.Models.Marketer", null)
+                    b.HasOne("Project2.Model.Entities.Marketer", null)
                         .WithMany("Orders")
                         .HasForeignKey("MarketerId");
 
-                    b.HasOne("Project2.Models.Customer", "Customer")
+                    b.HasOne("Project2.Model.Entities.Customer", "Customer")
                         .WithMany("Orders")
                         .HasForeignKey("customerId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Project2.Models.Deliver", "Deliver")
+                    b.HasOne("Project2.Model.Entities.Deliver", "Deliver")
                         .WithMany("Orders")
                         .HasForeignKey("deliverId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Project2.Models.Post", "Post")
+                    b.HasOne("Project2.Model.Entities.Post", "Post")
                         .WithMany("Orders")
                         .HasForeignKey("postId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -1128,15 +1128,15 @@ namespace Project2.Migrations
                     b.Navigation("Post");
                 });
 
-            modelBuilder.Entity("Project2.Models.Popularization", b =>
+            modelBuilder.Entity("Project2.Model.Entities.Popularization", b =>
                 {
-                    b.HasOne("Project2.Models.Marketer", "Marketer")
+                    b.HasOne("Project2.Model.Entities.Marketer", "Marketer")
                         .WithMany("Popularizations")
                         .HasForeignKey("marketerId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Project2.Models.Product", "Product")
+                    b.HasOne("Project2.Model.Entities.Product", "Product")
                         .WithMany()
                         .HasForeignKey("productId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -1147,19 +1147,19 @@ namespace Project2.Migrations
                     b.Navigation("Product");
                 });
 
-            modelBuilder.Entity("Project2.Models.Post", b =>
+            modelBuilder.Entity("Project2.Model.Entities.Post", b =>
                 {
-                    b.HasOne("Project2.Models.Product", null)
+                    b.HasOne("Project2.Model.Entities.Product", null)
                         .WithMany("Posts")
                         .HasForeignKey("Productid");
 
-                    b.HasOne("Project2.Models.Marketer", "Marketer")
+                    b.HasOne("Project2.Model.Entities.Marketer", "Marketer")
                         .WithMany("Posts")
                         .HasForeignKey("marketerId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Project2.Models.Product", "Product")
+                    b.HasOne("Project2.Model.Entities.Product", "Product")
                         .WithMany()
                         .HasForeignKey("productId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -1170,9 +1170,9 @@ namespace Project2.Migrations
                     b.Navigation("Product");
                 });
 
-            modelBuilder.Entity("Project2.Models.Search", b =>
+            modelBuilder.Entity("Project2.Model.Entities.Search", b =>
                 {
-                    b.HasOne("Project2.Models.User", "User")
+                    b.HasOne("Project2.Model.Entities.User", "User")
                         .WithMany("Searches")
                         .HasForeignKey("userId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -1181,9 +1181,9 @@ namespace Project2.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("Project2.Models.Tender", b =>
+            modelBuilder.Entity("Project2.Model.Entities.Tender", b =>
                 {
-                    b.HasOne("Project2.Models.Customer", "Customer")
+                    b.HasOne("Project2.Model.Entities.Customer", "Customer")
                         .WithMany("Tenders")
                         .HasForeignKey("CustomerId")
                         .OnDelete(DeleteBehavior.Restrict)
@@ -1192,15 +1192,15 @@ namespace Project2.Migrations
                     b.Navigation("Customer");
                 });
 
-            modelBuilder.Entity("Project2.Models.TenderComm", b =>
+            modelBuilder.Entity("Project2.Model.Entities.TenderComm", b =>
                 {
-                    b.HasOne("Project2.Models.Marketer", "Marketer")
+                    b.HasOne("Project2.Model.Entities.Marketer", "Marketer")
                         .WithMany("TenderComments")
                         .HasForeignKey("MarketerId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("Project2.Models.Tender", "Tender")
+                    b.HasOne("Project2.Model.Entities.Tender", "Tender")
                         .WithMany("TenderComments")
                         .HasForeignKey("TenderId")
                         .OnDelete(DeleteBehavior.Restrict)
@@ -1211,14 +1211,14 @@ namespace Project2.Migrations
                     b.Navigation("Tender");
                 });
 
-            modelBuilder.Entity("Project2.Models.Auction", b =>
+            modelBuilder.Entity("Project2.Model.Entities.Auction", b =>
                 {
                     b.Navigation("AuctionComments");
 
                     b.Navigation("CustAuctions");
                 });
 
-            modelBuilder.Entity("Project2.Models.Customer", b =>
+            modelBuilder.Entity("Project2.Model.Entities.Customer", b =>
                 {
                     b.Navigation("AuctionComms");
 
@@ -1235,19 +1235,19 @@ namespace Project2.Migrations
                     b.Navigation("Tenders");
                 });
 
-            modelBuilder.Entity("Project2.Models.Deliver", b =>
+            modelBuilder.Entity("Project2.Model.Entities.Deliver", b =>
                 {
                     b.Navigation("DelivOrders");
 
                     b.Navigation("Orders");
                 });
 
-            modelBuilder.Entity("Project2.Models.DelivOrder", b =>
+            modelBuilder.Entity("Project2.Model.Entities.DelivOrder", b =>
                 {
                     b.Navigation("Orders");
                 });
 
-            modelBuilder.Entity("Project2.Models.Marketer", b =>
+            modelBuilder.Entity("Project2.Model.Entities.Marketer", b =>
                 {
                     b.Navigation("Auctions");
 
@@ -1264,14 +1264,14 @@ namespace Project2.Migrations
                     b.Navigation("TenderComments");
                 });
 
-            modelBuilder.Entity("Project2.Models.Order", b =>
+            modelBuilder.Entity("Project2.Model.Entities.Order", b =>
                 {
                     b.Navigation("CustOrders");
 
                     b.Navigation("DelivOrders");
                 });
 
-            modelBuilder.Entity("Project2.Models.Post", b =>
+            modelBuilder.Entity("Project2.Model.Entities.Post", b =>
                 {
                     b.Navigation("CustPosts");
 
@@ -1280,19 +1280,19 @@ namespace Project2.Migrations
                     b.Navigation("Orders");
                 });
 
-            modelBuilder.Entity("Project2.Models.Product", b =>
+            modelBuilder.Entity("Project2.Model.Entities.Product", b =>
                 {
                     b.Navigation("Posts");
                 });
 
-            modelBuilder.Entity("Project2.Models.Tender", b =>
+            modelBuilder.Entity("Project2.Model.Entities.Tender", b =>
                 {
                     b.Navigation("Mark_Tenders");
 
                     b.Navigation("TenderComments");
                 });
 
-            modelBuilder.Entity("Project2.Models.User", b =>
+            modelBuilder.Entity("Project2.Model.Entities.User", b =>
                 {
                     b.Navigation("Complaints");
 

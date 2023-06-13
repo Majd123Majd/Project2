@@ -5,8 +5,8 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using Project2.Data;
-using Project2.Models;
+using Project2.Model;
+using Project2.Model.Entities;
 
 namespace Project2.Controllers
 {
