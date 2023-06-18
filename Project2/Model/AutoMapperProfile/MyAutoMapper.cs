@@ -19,8 +19,11 @@ namespace Project2.Model.AutoMapperProfile
 
             // Deliver..
             CreateMap<Deliver, AddDeliverViewModel>().ReverseMap();
+
             // Marketer..
             CreateMap<Marketer, AddMarketerViewModel>().ReverseMap();
+            CreateMap<Marketer, MarketerViewModel>()
+                .ForMember(c => c.user_name, c => c.MapFrom(f => f.User.Name));
         }
     }
 }

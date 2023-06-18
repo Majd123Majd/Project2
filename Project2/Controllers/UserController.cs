@@ -23,11 +23,9 @@ namespace Project2.Controllers
     [ApiController]
     public class UserController : ControllerBase
     {
-        private readonly AppDbContext _DbContext;
         private IUserService _UserService;
-        public UserController(AppDbContext DbContext, IUserService UserService)
+        public UserController(IUserService UserService)
         {
-            _DbContext = DbContext;
             _UserService = UserService;
         }
         [HttpPost("Login")]
