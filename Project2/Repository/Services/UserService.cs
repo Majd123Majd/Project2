@@ -117,13 +117,13 @@ namespace Project2.Repository.Services
 
             _DbContext.Customers.Add(NewCustomerEntity);
             _DbContext.SaveChanges();
-            // return Login(new LoginViewModel()
-            //{
-            //    UserName = NewCustomer.Name,
-            //    Password = NewCustomer.UserInformation.password,
-            //     Role = Data.Enum.UserType.Customer.ToString()
-            // });
-            return new ApiResponse(true, "Done");
+
+            return Login(new LoginViewModel()
+            {
+                UserName = NewCustomer.Name,
+                Password = NewCustomer.UserInformation.password,
+                Role = Data.Enum.UserType.Customer.ToString()
+            });
         }
         public async Task<ApiResponse> RegisterForDeliver(AddDeliverViewModel NewDeliver)
         {
