@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Project2.Model;
+using Project2.Model.Entities;
 using Project2.Model.Helpers;
 using Project2.Repository.Interfaces;
 
@@ -68,15 +69,13 @@ namespace Project2.Repository.Services
 
         public ApiResponse ViewPostForMarketer(int userId)
         {
+            Marketer? MarketerEntity = _dbContext.Marketers.FirstOrDefault(c => c.userId == userId);
 
-            var marketer = _dbContext.Marketers.FirstOrDefault(c => c.userId == userId);
-            if (marketer == null)
-                return new ApiResponse(marketer, "user not found");
+            if (MarketerEntity == null)
+                return new ApiResponse(MarketerEntity, "user not found");
 
-            var marketerpost = _dbContext.Posts
-                .FirstOrDefault(c => c.marketerId == marketer.Id);
-            if (marketerpost == null)
-                return new ApiResponse(marketerpost, "customer post not found");
+            List<Post> marketerpost = _dbContext.Posts
+                .Where(c => c.marketerId == MarketerEntity.Id).ToList();
 
             return new ApiResponse(marketerpost, "Seccess");
         }

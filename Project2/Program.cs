@@ -19,6 +19,7 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IProfileService, ProfileService>();
 builder.Services.AddScoped<IMarketerService, MarketerService>();
+builder.Services.AddScoped<IProductService, ProductService>();
 //builder.Services.AddScoped<IPostServices, PostServices>();
 //builder.Services.AddScoped<INotifyServices, NotifyServices>();
 builder.Services.AddDbContext<AppDbContext>(options =>
