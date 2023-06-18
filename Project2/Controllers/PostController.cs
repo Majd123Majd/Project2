@@ -5,8 +5,8 @@ using Project2.Model;
 using Project2.Model.Entities;
 using System.IdentityModel.Tokens.Jwt;
 using Project2.Model.Helpers;
-using Project2.Repository.Interfaces;
 using Project2.Repository.Services;
+using Project2.Repository.Interfaces;
 
 namespace Project2.Controllers
 {
@@ -14,184 +14,186 @@ namespace Project2.Controllers
     [Route("api/[Controller]")]
     public class PostController : Controller
     {
-        private readonly AppDbContext _dbContext;
-        private readonly IHttpContextAccessor _httpContextAccessor;
-        private readonly IPostServices _postServices;
-        public PostController(AppDbContext dbContext , IHttpContextAccessor httpContextAccessor , IPostServices postServices)
+        private readonly IPostService _PostService;
+        public PostController(IPostService PostService)
         {
-            _dbContext = dbContext;
-            _httpContextAccessor = httpContextAccessor;
-            _postServices = postServices;
+            _PostService = PostService;
         }
-        [HttpGet("post/{id}")]
-        public IActionResult PostDetails(int id)
+        [HttpPost("GetAllPosts")]
+        public IActionResult GetAllPosts(ComplexFilter Filter)
         {
-            var post = _dbContext.Posts
-                .Include(p => p.Marketer) // تحميل معلومات التاجر
-                .Include(p => p.Product) // تحميل معلومات المنتج
-                .FirstOrDefault(p => p.Id == id);
-
-            if (post == null)
-            {
-                return NotFound();
-            }
-
-            return View(post);
+            ApiResponse Response = _PostService.GetAllPosts(Filter);
+            return Ok(Response);
         }
+        //[HttpGet("post/{id}")]
+        //public IActionResult PostDetails(int id)
+        //{
+        //    var post = _dbContext.Posts
+        //        .Include(p => p.Marketer) // تحميل معلومات التاجر
+        //        .Include(p => p.Product) // تحميل معلومات المنتج
+        //        .FirstOrDefault(p => p.Id == id);
 
-        [HttpGet("marketerpost")]
-        public IActionResult GetSellerPosts()
-        {
-            try
-            {
-                JwtSecurityTokenHandler jwtHandler = new JwtSecurityTokenHandler();
+        //    if (post == null)
+        //    {
+        //        return NotFound();
+        //    }
 
-                int UserId = Convert.ToInt32(jwtHandler.ReadJwtToken(_httpContextAccessor.HttpContext
-                    .Request.Headers["Authorization"].ToString().Split(" ")[1]).Claims.ToList()[0].Value);
+        //    return View(post);
+        //}
 
-                ApiResponse response = _postServices.ViewPostForMarketer(UserId);
+        //[HttpGet("marketerpost")]
+        //public IActionResult GetSellerPosts()
+        //{
+        //    try
+        //    {
+        //        JwtSecurityTokenHandler jwtHandler = new JwtSecurityTokenHandler();
 
-                if (!string.IsNullOrEmpty(response.ErrorMessage) ? response.ErrorMessage != "Seccess" : false)
-                    return BadRequest(response);
+        //        int UserId = Convert.ToInt32(jwtHandler.ReadJwtToken(_httpContextAccessor.HttpContext
+        //            .Request.Headers["Authorization"].ToString().Split(" ")[1]).Claims.ToList()[0].Value);
 
-                return Ok(response);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError, ex +"حدث خطأ أثناء جلب المنشورات للبائع.");
-            }
-        }
+        //        ApiResponse response = _PostServices.ViewPostForMarketer(UserId);
 
-        [HttpGet("customerpost")]
-        public IActionResult GetcustomerPosts()
-        {
-            try
-            {
-                JwtSecurityTokenHandler jwtHandler = new JwtSecurityTokenHandler();
+        //        if (!string.IsNullOrEmpty(response.ErrorMessage) ? response.ErrorMessage != "Seccess" : false)
+        //            return BadRequest(response);
 
-                int UserId = Convert.ToInt32(jwtHandler.ReadJwtToken(_httpContextAccessor.HttpContext
-                    .Request.Headers["Authorization"].ToString().Split(" ")[1]).Claims.ToList()[0].Value);
+        //        return Ok(response);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return StatusCode(StatusCodes.Status500InternalServerError, ex +"حدث خطأ أثناء جلب المنشورات للبائع.");
+        //    }
+        //}
 
-                ApiResponse response = _postServices.ViewPostForCustomer(UserId);
+        //[HttpGet("customerpost")]
+        //public IActionResult GetcustomerPosts()
+        //{
+        //    try
+        //    {
+        //        JwtSecurityTokenHandler jwtHandler = new JwtSecurityTokenHandler();
 
-                if (!string.IsNullOrEmpty(response.ErrorMessage) ? response.ErrorMessage != "Seccess" : false)
-                    return BadRequest(response);
-                return Ok(response);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError, ex + "حدث خطأ أثناء جلب المنشورات للبائع.");
-            }
-        }
+        //        int UserId = Convert.ToInt32(jwtHandler.ReadJwtToken(_httpContextAccessor.HttpContext
+        //            .Request.Headers["Authorization"].ToString().Split(" ")[1]).Claims.ToList()[0].Value);
 
-        [HttpPost("addpost")]
-        public IActionResult AddPost(int marketerId, string productName, int productPrice, int productQuantity, string description)
-        {
-            try
-            {
-                // إنشاء منتج جديد
-                var product = new Product
-                {
-                    Name = productName,
-                    Price = productPrice,
-                    //Quantity = productQuantity,
-                    CreatedDate = DateTime.Now
-                };
+        //        ApiResponse response = _PostServices.ViewPostForCustomer(UserId);
 
-                // إضافة المنتج إلى قاعدة البيانات
-                _dbContext.Products.Add(product);
-                _dbContext.SaveChanges();
+        //        if (!string.IsNullOrEmpty(response.ErrorMessage) ? response.ErrorMessage != "Seccess" : false)
+        //            return BadRequest(response);
+        //        return Ok(response);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return StatusCode(StatusCodes.Status500InternalServerError, ex + "حدث خطأ أثناء جلب المنشورات للبائع.");
+        //    }
+        //}
 
-                // إنشاء منشور جديد
-                var post = new Post
-                {
-                    marketerId = marketerId,
-                    productId = product.id, // استخدام معرّف المنتج الجديد
-                    Description = description,
-                    CreatedDate = DateTime.Now
-                };
+        //[HttpPost("addpost")]
+        //public IActionResult AddPost(int marketerId, string productName, int productPrice, int productQuantity, string description)
+        //{
+        //    try
+        //    {
+        //        // إنشاء منتج جديد
+        //        var product = new Product
+        //        {
+        //            Name = productName,
+        //            Price = productPrice,
+        //            //Quantity = productQuantity,
+        //            CreatedDate = DateTime.Now
+        //        };
 
-                // إضافة المنشور إلى قاعدة البيانات
-                _dbContext.Posts.Add(post);
-                _dbContext.SaveChanges();
+        //        // إضافة المنتج إلى قاعدة البيانات
+        //        _dbContext.Products.Add(product);
+        //        _dbContext.SaveChanges();
 
-                return Ok("تمت إضافة المنتج والمنشور بنجاح.");
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError, ex+ "حدث خطأ أثناء إضافة المنتج والمنشور.");
-            }
-        }
+        //        // إنشاء منشور جديد
+        //        var post = new Post
+        //        {
+        //            marketerId = marketerId,
+        //            productId = product.id, // استخدام معرّف المنتج الجديد
+        //            Description = description,
+        //            CreatedDate = DateTime.Now
+        //        };
 
-        [HttpPut("updatepost/{id}")]
-        public IActionResult UpdatePost(int postId, int marketerId, int productId, string description)
-        {
-            try
-            {
-                // البحث عن المنشور المراد تحديثه بواسطة الـ postId
-                var post = _dbContext.Posts.Find(postId);
+        //        // إضافة المنشور إلى قاعدة البيانات
+        //        _dbContext.Posts.Add(post);
+        //        _dbContext.SaveChanges();
 
-                if (post == null)
-                    return NotFound("المنشور غير موجود.");
+        //        return Ok("تمت إضافة المنتج والمنشور بنجاح.");
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return StatusCode(StatusCodes.Status500InternalServerError, ex+ "حدث خطأ أثناء إضافة المنتج والمنشور.");
+        //    }
+        //}
 
-                // تحديث بيانات المنشور
-                post.marketerId = marketerId;
-                post.productId = productId;
-                post.Description = description;
+        //[HttpPut("updatepost/{id}")]
+        //public IActionResult UpdatePost(int postId, int marketerId, int productId, string description)
+        //{
+        //    try
+        //    {
+        //        // البحث عن المنشور المراد تحديثه بواسطة الـ postId
+        //        var post = _dbContext.Posts.Find(postId);
 
-                // حفظ التغييرات في قاعدة البيانات
-                _dbContext.SaveChanges();
+        //        if (post == null)
+        //            return NotFound("المنشور غير موجود.");
 
-                return Ok("تم تحديث المنتج بنجاح.");
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError, ex+"حدث خطأ أثناء تحديث المنتج.");
-            }
-        }
+        //        // تحديث بيانات المنشور
+        //        post.marketerId = marketerId;
+        //        post.productId = productId;
+        //        post.Description = description;
 
-        [HttpDelete("deletepost/{id}")]
-        public IActionResult DeletePost(int id)
-        {
-            try
-            {
-                ApiResponse response = _postServices.DeletePost(id);
+        //        // حفظ التغييرات في قاعدة البيانات
+        //        _dbContext.SaveChanges();
 
-                if (!string.IsNullOrEmpty(response.ErrorMessage) ? response.ErrorMessage != "Seccess" : false)
-                    return BadRequest(response);
-                return Ok(response);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError, ex + "حدث خطأ أثناء حذف المنتج.");
-            }
-        }
+        //        return Ok("تم تحديث المنتج بنجاح.");
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return StatusCode(StatusCodes.Status500InternalServerError, ex+"حدث خطأ أثناء تحديث المنتج.");
+        //    }
+        //}
 
-        [HttpPost("interaction")]
-        public IActionResult AddInteraction(int postId, string reactionType)
-        {
-            // الحصول على معرّف المستخدم الحالي
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        //[HttpDelete("deletepost/{id}")]
+        //public IActionResult DeletePost(int id)
+        //{
+        //    try
+        //    {
+        //        ApiResponse response = _PostServices.DeletePost(id);
 
-            // قم بتحويل معرّف المستخدم إلى int إذا كان من النوع int
-            int.TryParse(userId, out int parsedUserId);
+        //        if (!string.IsNullOrEmpty(response.ErrorMessage) ? response.ErrorMessage != "Seccess" : false)
+        //            return BadRequest(response);
+        //        return Ok(response);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return StatusCode(StatusCodes.Status500InternalServerError, ex + "حدث خطأ أثناء حذف المنتج.");
+        //    }
+        //}
 
-            // إنشاء كائن Interaction وتعيين القيم
-            var interaction = new Interaction
-            {
-                PostId = postId,
-                UserId = parsedUserId,
-                ReactionType = reactionType,
-                CreatedDate = DateTime.Now
-            };
+        //[HttpPost("interaction")]
+        //public IActionResult AddInteraction(int postId, string reactionType)
+        //{
+        //    // الحصول على معرّف المستخدم الحالي
+        //    var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-            // قم بإضافة التفاعل إلى قاعدة البيانات (أو قم بتنفيذ الإجراء المناسب)
-            _dbContext.Interactions.Add(interaction);
-            _dbContext.SaveChanges();
+        //    // قم بتحويل معرّف المستخدم إلى int إذا كان من النوع int
+        //    int.TryParse(userId, out int parsedUserId);
 
-            // العودة برمز استجابة HTTP 200 للدلالة على نجاح العملية
-            return Ok();
-        }
+        //    // إنشاء كائن Interaction وتعيين القيم
+        //    var interaction = new Interaction
+        //    {
+        //        PostId = postId,
+        //        UserId = parsedUserId,
+        //        ReactionType = reactionType,
+        //        CreatedDate = DateTime.Now
+        //    };
+
+        //    // قم بإضافة التفاعل إلى قاعدة البيانات (أو قم بتنفيذ الإجراء المناسب)
+        //    _dbContext.Interactions.Add(interaction);
+        //    _dbContext.SaveChanges();
+
+        //    // العودة برمز استجابة HTTP 200 للدلالة على نجاح العملية
+        //    return Ok();
+        //}
 
 
 
