@@ -1,9 +1,16 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Project2.Model;
 using Project2.Model.Entities;
+using Project2.Repository.Interfaces;
+using System.IdentityModel.Tokens.Jwt;
+using Project2.Model.Helpers;
+using Project2.DTOs.CustomerDTOs;
+using Project2.DTOs.MarketerDTOs;
+using Project2.DTOs.DeliverDTOs;
 
 namespace Project2.Controllers
 {
@@ -13,214 +20,300 @@ namespace Project2.Controllers
     {
         private readonly ILogger<ProfileController> _logger;
         private readonly AppDbContext _dbContext;
+        private readonly IProfileService _profileService;
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public ProfileController(ILogger<ProfileController> logger, AppDbContext dbContext)
+
+        public ProfileController(ILogger<ProfileController> logger, AppDbContext dbContext, IHttpContextAccessor httpContextAccessor, IProfileService profileService)
         {
             _logger = logger;
             _dbContext = dbContext;
+            _httpContextAccessor = httpContextAccessor;
+            _profileService = profileService;
         }
 
-        // عرض بروفايل التاجر من وجهة نظر التاجر
-        [HttpGet("/marketerprofile")]
+        // عرض بروفايل التاجر 
+        [HttpGet("marketerprofile")]
         public IActionResult MarketerProfile()
         {
-             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-             int.TryParse(userId, out int marketeid);
-           
-            var marketer = _dbContext.Marketers
-                    .Include(m => m.Posts) // تحميل المنشورات
-                    .Include(m => m.Orders) // تحميل طلبات الشراء
-                    .Include(m => m.Auctions) //تحميل 
-                    .FirstOrDefault(m => m.Id == marketeid);
+            JwtSecurityTokenHandler jwtHandler = new JwtSecurityTokenHandler();
 
-            var followedPages = _dbContext.FollowingPages
-                .Where(fp => fp.userId == marketeid)//تحميل الصفحات المتابعة 
-                .Select(fp => fp.Marketer);  
+            int UserId = Convert.ToInt32(jwtHandler.ReadJwtToken(_httpContextAccessor.HttpContext
+                .Request.Headers["Authorization"].ToString().Split(" ")[1]).Claims.ToList()[0].Value);
+
+            ApiResponse response = _profileService.ViewMarketerProfile(UserId);
+            if (!string.IsNullOrEmpty(response.ErrorMessage) ? response.ErrorMessage != "Seccess" : false)
+                return BadRequest(response);
+            return Ok(response);
+        }
        
-
-            if (marketer == null)
-            {
-                return NotFound();
-            }
-
-
-            return Ok(marketer);
-        }
-         // عرض بروفايل التاجر من وجهة نظر الزبون
-        [HttpGet("/marketerprofile/{id}")]
-        public IActionResult MarketerProfile(int id)
+        // عرض صفحة الزبون
+        [HttpGet("customerprofile")]
+        public IActionResult CustomerProfile()
         {
-            var marketer = _dbContext.Marketers
-                    .Include(m => m.Posts) // تحميل المنشورات
-                    .FirstOrDefault(m => m.Id == id);
+            JwtSecurityTokenHandler jwtHandler = new JwtSecurityTokenHandler();
 
-            if (marketer == null)
-            {
-                return NotFound();
-            }
-            return View(marketer);
+            int UserId = Convert.ToInt32(jwtHandler.ReadJwtToken(_httpContextAccessor.HttpContext
+                .Request.Headers["Authorization"].ToString().Split(" ")[1]).Claims.ToList()[0].Value);
+
+            ApiResponse response = _profileService.ViewCustomerProfile(UserId);
+            if (!string.IsNullOrEmpty(response.ErrorMessage) ? response.ErrorMessage != "Seccess" : false)
+                return BadRequest(response);
+            return Ok(response);
         }
 
-        // تعديل معلومات الزبون/التاجر
-        [HttpPost("/customerprofile/editprofile/{id}")]
-        public IActionResult EditCustomerProfile(int id ,Customer Updatecustomer)
+        //صفحة شركة التوصيل
+        [HttpGet("deliverprofile")]
+        public IActionResult DeliverProfile()
         {
-            var existingCustomer = _dbContext.Customers.FirstOrDefault(c => c.Id == id);
-            if (existingCustomer == null)
-            {
-                return NotFound();
-            }
+            JwtSecurityTokenHandler jwtHandler = new JwtSecurityTokenHandler();
+
+            int UserId = Convert.ToInt32(jwtHandler.ReadJwtToken(_httpContextAccessor.HttpContext
+                .Request.Headers["Authorization"].ToString().Split(" ")[1]).Claims.ToList()[0].Value);
+
+            ApiResponse response = _profileService.ViewDeliverProfile(UserId);
+            if (!string.IsNullOrEmpty(response.ErrorMessage) ? response.ErrorMessage != "Seccess" : false)
+                return BadRequest(response);
+            return Ok(response);
+        }
+       
+        // تعديل معلومات الزبون
+        [HttpPost("editcustomerprofile/{id}")]
+        public IActionResult EditCustomerProfile(int id ,UpdateCustomerViewModel Updatecustomer)
+        {
+            ApiResponse response = _profileService.EditCustomerProfile(id, Updatecustomer);
+            if (!string.IsNullOrEmpty(response.ErrorMessage) ? response.ErrorMessage != "Seccess" : false)
+                return BadRequest(response);
+            return Ok(response);
             // تحديث المعلومات بناءً على البيانات المحدثة
-            existingCustomer.Name = Updatecustomer.Name;
-            existingCustomer.phoneNumber = Updatecustomer.phoneNumber;
-            existingCustomer.AddressId = Updatecustomer.AddressId;
-            existingCustomer.photo = Updatecustomer.photo;
-            existingCustomer.AccountCach = Updatecustomer.AccountCach;
-            existingCustomer.Point = Updatecustomer.Point;
-
-            _dbContext.SaveChanges();
-
-            return Ok(Updatecustomer);
+            // existingCustomer.Name = Updatecustomer.Name;
+            // existingCustomer.phoneNumber = Updatecustomer.phoneNumber;
+            // //existingCustomer.AddressId = Updatecustomer.AddressId;
+            // existingCustomer.photo = Updatecustomer.photo;
+            //// existingCustomer.AccountCach = Updatecustomer.AccountCach;
+            // existingCustomer.Point = Updatecustomer.Point;
+            //_dbContext.SaveChanges();
+            //return Ok(Updatecustomer);
         }
-        [HttpPost("/marketerprofile/editprofile/{id}")]
-        public IActionResult EditMarketerProfile(int id, Marketer updatedMarketer)
+
+        //تعديل معلومات التاجر
+        [HttpPost("editmarketerprofile/{id}")]
+        public IActionResult EditMarketerProfile(int id, UpdateMarketerViewModel updatedMarketer)
         {
-            var existingMarketer = _dbContext.Marketers.FirstOrDefault(m => m.Id == id);
+            ApiResponse response = _profileService.EditMarketerProfile(id, updatedMarketer);
+            if (!string.IsNullOrEmpty(response.ErrorMessage) ? response.ErrorMessage != "Seccess" : false)
+                return BadRequest(response);
+            return Ok(response);
+            // var existingMarketer = _dbContext.Marketers.FirstOrDefault(m => m.Id == id);
 
-            if (existingMarketer == null)
-            {
-                return NotFound();
-            }
+            // if (existingMarketer == null)
+            // {
+            //     return NotFound();
+            // }
 
-            // تحديث المعلومات بناءً على البيانات المحدثة
-            existingMarketer.Name = updatedMarketer.Name;
-            existingMarketer.phoneNumber = updatedMarketer.phoneNumber;
-            existingMarketer.AddressId = updatedMarketer.AddressId;
-            existingMarketer.photo = updatedMarketer.photo;
-            existingMarketer.AccountCach = updatedMarketer.AccountCach;
-            existingMarketer.Point = updatedMarketer.Point;
+            // // تحديث المعلومات بناءً على البيانات المحدثة
+            // existingMarketer.Name = updatedMarketer.Name;
+            // existingMarketer.phoneNumber = updatedMarketer.phoneNumber;
+            // //existingMarketer.AddressId = updatedMarketer.AddressId;
+            // existingMarketer.photo = updatedMarketer.photo;
+            //// existingMarketer.AccountCach = updatedMarketer.AccountCach;
+            // existingMarketer.Point = updatedMarketer.Point;
 
-            // حفظ التغييرات في قاعدة البيانات
-            _dbContext.SaveChanges();
+            // // حفظ التغييرات في قاعدة البيانات
+            // _dbContext.SaveChanges();
 
-            return Ok(updatedMarketer);
+            // return Ok(updatedMarketer);
         }
 
-      // متابعة التاجر
-        [HttpPost("/marketerprofile/follow/{id}")]
+        //تعديل معلومات التوصيل
+        [HttpPost("editdeliverprofile/{id}")]
+        public IActionResult EditDriverProfile(int id, UpdateDeliverViewModel updatedDeliver)
+        {
+            ApiResponse response = _profileService.EditDeliverProfile(id, updatedDeliver);
+            if (!string.IsNullOrEmpty(response.ErrorMessage) ? response.ErrorMessage != "Seccess" : false)
+                return BadRequest(response);
+            return Ok(response);
+            
+        }
+
+        // متابعة التاجر
+        [HttpPost("followmarketer/{id}")]
         public IActionResult FollowMarketer(int id)
         {
-            // الحصول على معرّف المستخدم الحالي
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            JwtSecurityTokenHandler jwtHandler = new JwtSecurityTokenHandler();
 
-            // قم بتحويل معرّف المستخدم إلى int إذا كان من النوع int
-            int.TryParse(userId, out int parsedUserId);
+            int UserId = Convert.ToInt32(jwtHandler.ReadJwtToken(_httpContextAccessor.HttpContext
+                .Request.Headers["Authorization"].ToString().Split(" ")[1]).Claims.ToList()[0].Value);
 
-            // إنشاء كائن FollowingPage وتعيين القيم
-            var followingPage = new FollowingPage
-            {
-                pageId = id,
-                userId = parsedUserId,
-                CreatedDate = DateTime.Now
-            };
+            ApiResponse response = _profileService.FollowMarketer(UserId, id);
+            if (!string.IsNullOrEmpty(response.ErrorMessage) ? response.ErrorMessage != "Seccess" : false)
+                return BadRequest(response);
+            return Ok(response);
 
-            // قم بإضافة التاجر إلى قاعدة البيانات (أو قم بتنفيذ الإجراء المناسب)
-            _dbContext.FollowingPages.Add(followingPage);
-            _dbContext.SaveChanges();
-
-            // العودة برمز استجابة HTTP 200 للدلالة على نجاح العملية
-             return Ok();
-
-            //return RedirectToAction("MarketerProfile", new { id = marketerId });
         }
 
         // إلغاء متابعة التاجر
-        [HttpPost("/marketerprofile/unfollow/{id}")]
+        [HttpPost("unfollowmarketer/{id}")]
         public IActionResult UnfollowMarketer(int id)
          {
-             // الحصول على معرّف المستخدم الحالي
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            JwtSecurityTokenHandler jwtHandler = new JwtSecurityTokenHandler();
 
-            // قم بتحويل معرّف المستخدم إلى int إذا كان من النوع int
-            int.TryParse(userId, out int parsedUserId);
+            int UserId = Convert.ToInt32(jwtHandler.ReadJwtToken(_httpContextAccessor.HttpContext
+                .Request.Headers["Authorization"].ToString().Split(" ")[1]).Claims.ToList()[0].Value);
 
-            // البحث عن كائن FollowingPage المرتبط بالتاجر والمستخدم
-            var followingPage = _dbContext.FollowingPages.FirstOrDefault(fp => fp.pageId == id && fp.userId == parsedUserId);
-
-            if (followingPage != null)
-            {
-                // قم بإزالة التاجر من قاعدة البيانات (أو قم بتنفيذ الإجراء المناسب)
-                _dbContext.FollowingPages.Remove(followingPage);
-                _dbContext.SaveChanges();
-            }
-
-            // العودة برمز استجابة HTTP 200 للدلالة على نجاح العملية
-            return Ok();
-           
-
-            //return RedirectToAction("MarketerProfile", new { id = marketerId });
-        }
-
-        // عرض الصفحات المتابعة للمستخدم
-        [HttpGet("/followingpages")]
-        public IActionResult FollowingPages()
-        {
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var followingPages = _dbContext.FollowingPages.Include(fp => fp.Marketer).Where(fp => fp.userId == int.Parse(userId)).ToList();
-            return View(followingPages);
-        }
-
-        // عرض صفحة الزبون
-        [HttpGet("/customerprofile/{id}")]
-        public IActionResult CustomerProfile(int id)
-        {
-            var custfri =  _dbContext.Customers
-                .Include(c => c.Friends) // تحميل قائمة الأصدقاء
-                .FirstOrDefault(c => c.Id == id);
-
-            var followedPages = _dbContext.FollowingPages
-                .Where(fp => fp.userId == id)//تحميل الصفحات المتابعة 
-                .Select(fp => fp.Marketer);  
-
-            if (custfri == null)
-            {
-                return NotFound();
-            }
-
-            return View(custfri,followedPages);
-        }
-
-        private IActionResult View(Customer custfri, IQueryable<Marketer> followedPages)
-        {
-            throw new NotImplementedException();
+            ApiResponse response = _profileService.UnfollowMarketer(UserId, id);
+            if (!string.IsNullOrEmpty(response.ErrorMessage) ? response.ErrorMessage != "Seccess" : false)
+                return BadRequest(response);
+            return Ok(response);
         }
 
         // متابعة زبون آخر
-        [HttpPost("/followuser/{friendId}")]
-        public IActionResult FollowCustomer(int friendId)
+        [HttpPost("followcustomer/{id}")]
+        public IActionResult FollowCustomer(int id)
         {
-            var customerId = Convert.ToInt32(HttpContext.GetRouteValue("friendId"));
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var friend = _dbContext.Friends.FirstOrDefault(f => f.friendId == friendId && f.userId == int.Parse(userId));
+            JwtSecurityTokenHandler jwtHandler = new JwtSecurityTokenHandler();
 
-            if (friend != null)
-            {
-                // الزبون متابع بالفعل
-                return RedirectToAction("UserProfile", new { id = friendId });
-            }
+            int UserId = Convert.ToInt32(jwtHandler.ReadJwtToken(_httpContextAccessor.HttpContext
+                .Request.Headers["Authorization"].ToString().Split(" ")[1]).Claims.ToList()[0].Value);
 
-            var newFriend = new Friend
-            {
-                friendId = friendId,
-                userId = int.Parse(userId),
-                CreatedDate = DateTime.Now
-            };
-
-            _dbContext.Friends.Add(newFriend);
-            _dbContext.SaveChanges();
-
-            return RedirectToAction("UserProfile", new { id = friendId });
+            ApiResponse response = _profileService.FollowCustomer(UserId, id);
+            if (!string.IsNullOrEmpty(response.ErrorMessage) ? response.ErrorMessage != "Seccess" : false)
+                return BadRequest(response);
+            return Ok(response);
         }
 
+        //إلغاء متابعة زبون
+        [HttpPost("unfollowcustomer/{id}")]
+        public IActionResult UnfollowCustomer(int id)
+        {
+            JwtSecurityTokenHandler jwtHandler = new JwtSecurityTokenHandler();
+
+            int UserId = Convert.ToInt32(jwtHandler.ReadJwtToken(_httpContextAccessor.HttpContext
+                .Request.Headers["Authorization"].ToString().Split(" ")[1]).Claims.ToList()[0].Value);
+
+            ApiResponse response = _profileService.UnfollowCustomer(UserId, id);
+            if (!string.IsNullOrEmpty(response.ErrorMessage) ? response.ErrorMessage != "Seccess" : false)
+                return BadRequest(response);
+            return Ok(response);
+        }
+
+        // عرض الصفحات المتابعة للمستخدم
+        [HttpGet("followingpages")]
+        public IActionResult FollowingPages()
+        {
+            JwtSecurityTokenHandler jwtHandler = new JwtSecurityTokenHandler();
+
+            int UserId = Convert.ToInt32(jwtHandler.ReadJwtToken(_httpContextAccessor.HttpContext
+                .Request.Headers["Authorization"].ToString().Split(" ")[1]).Claims.ToList()[0].Value);
+
+            ApiResponse response = _profileService.ViewFollowingPagesList(UserId);
+            if (!string.IsNullOrEmpty(response.ErrorMessage) ? response.ErrorMessage != "Seccess" : false)
+                return BadRequest(response);
+            return Ok(response);
+        }
+        
+        //عرص الاصدقاء
+        [HttpGet("friendslist")]
+        public IActionResult FriendsList()
+        {
+            JwtSecurityTokenHandler jwtHandler = new JwtSecurityTokenHandler();
+
+            int UserId = Convert.ToInt32(jwtHandler.ReadJwtToken(_httpContextAccessor.HttpContext
+                .Request.Headers["Authorization"].ToString().Split(" ")[1]).Claims.ToList()[0].Value);
+
+            ApiResponse response = _profileService.ViewFriendsList(UserId);
+            if (!string.IsNullOrEmpty(response.ErrorMessage) ? response.ErrorMessage != "Seccess" : false)
+                return BadRequest(response);
+            return Ok(response);
+        }
+
+        // عرض صفحة الزبون
+        [HttpGet("customerprofile/{id}")]
+        public IActionResult CustomerProfile(int id)
+        {
+            ApiResponse response = _profileService.ViewCustomerProfile(id);
+            if (!string.IsNullOrEmpty(response.ErrorMessage) ? response.ErrorMessage != "Seccess" : false)
+                return BadRequest(response);
+            return Ok(response);
+        }
+
+        // عرض بروفايل التاجر من وجهة نظر الزبون
+        [HttpGet("marketerprofile/{id}")]
+        public IActionResult MarketerProfile(int id)
+        {
+            ApiResponse response = _profileService.ViewMarketerProfile(id);
+            if (!string.IsNullOrEmpty(response.ErrorMessage) ? response.ErrorMessage != "Seccess" : false)
+                return BadRequest(response);
+            return Ok(response);
+        }
+
+        //صفحة شركة التوصيل
+        [HttpGet("deliverprofile/{id}")]
+        public IActionResult DeliverProfile(int id)
+        {
+            ApiResponse response = _profileService.ViewDeliverProfile(id);
+            if (!string.IsNullOrEmpty(response.ErrorMessage) ? response.ErrorMessage != "Seccess" : false)
+                return BadRequest(response);
+            return Ok(response);
+        }
+
+        //التعاقد مع شركة توصيل
+        [HttpPost("contactdeliver/{id}")]
+        public IActionResult ContractWithDeliver(int id)
+        {
+            JwtSecurityTokenHandler jwtHandler = new JwtSecurityTokenHandler();
+
+            int UserId = Convert.ToInt32(jwtHandler.ReadJwtToken(_httpContextAccessor.HttpContext
+                .Request.Headers["Authorization"].ToString().Split(" ")[1]).Claims.ToList()[0].Value);
+
+            ApiResponse response = _profileService.ContractWithDeliver(UserId, id);
+            if (!string.IsNullOrEmpty(response.ErrorMessage) ? response.ErrorMessage != "Seccess" : false)
+                return BadRequest(response);
+            return Ok(response);
+        }
+        // الغاء التعاقد مع شركة توصيل
+        [HttpPost("cancelcontactdeliver/{id}")]
+        public IActionResult CancelContractWithDeliver(int id)
+        {
+            JwtSecurityTokenHandler jwtHandler = new JwtSecurityTokenHandler();
+
+            int UserId = Convert.ToInt32(jwtHandler.ReadJwtToken(_httpContextAccessor.HttpContext
+                .Request.Headers["Authorization"].ToString().Split(" ")[1]).Claims.ToList()[0].Value);
+
+            ApiResponse response = _profileService.CancelContractWithDeliver(UserId, id);
+            if (!string.IsNullOrEmpty(response.ErrorMessage) ? response.ErrorMessage != "Seccess" : false)
+                return BadRequest(response);
+            return Ok(response);
+        }
+
+        //
+        [HttpPost("addcustomeragent/{id}")]
+        public IActionResult AddAgent(int id)
+        {
+            JwtSecurityTokenHandler jwtHandler = new JwtSecurityTokenHandler();
+
+            int UserId = Convert.ToInt32(jwtHandler.ReadJwtToken(_httpContextAccessor.HttpContext
+                .Request.Headers["Authorization"].ToString().Split(" ")[1]).Claims.ToList()[0].Value);
+
+            ApiResponse response = _profileService.AddAgent(UserId, id);
+            if (!string.IsNullOrEmpty(response.ErrorMessage) ? response.ErrorMessage != "Seccess" : false)
+                return BadRequest(response);
+            return Ok(response);
+        }
+
+        //
+        [HttpPost("removecustomeragent/{id}")]
+        public IActionResult RemoveAgent(int id)
+        {
+            JwtSecurityTokenHandler jwtHandler = new JwtSecurityTokenHandler();
+
+            int UserId = Convert.ToInt32(jwtHandler.ReadJwtToken(_httpContextAccessor.HttpContext
+                .Request.Headers["Authorization"].ToString().Split(" ")[1]).Claims.ToList()[0].Value);
+
+            ApiResponse response = _profileService.RemoveAgent(UserId, id);
+            if (!string.IsNullOrEmpty(response.ErrorMessage) ? response.ErrorMessage != "Seccess" : false)
+                return BadRequest(response);
+            return Ok(response);
+        }
     }
 }

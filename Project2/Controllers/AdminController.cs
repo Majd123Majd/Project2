@@ -110,7 +110,7 @@ namespace Project2.Controllers
                     Name = rolename,
                 };
 
-            // إضافة المنتج إلى قاعدة البيانات
+            
             _dbContext.Roles.Add(role);
             _dbContext.SaveChanges();
 
@@ -134,7 +134,7 @@ namespace Project2.Controllers
                     RoleId = roleid
                 };
 
-                // إضافة المنتج إلى قاعدة البيانات
+             
                 _dbContext.Maintainers.Add(maintainer);
                 _dbContext.SaveChanges();
 
@@ -146,8 +146,8 @@ namespace Project2.Controllers
             }
 
         }
-        [HttpPost("addDeliver")]
-        public IActionResult PostDeliver(String name, String email, int phonNum , int addid)
+        [HttpPost("adddeliver")]
+        public IActionResult PostDeliver(String name, String email, int phonNum , string password)
         {
             try
             {
@@ -155,6 +155,7 @@ namespace Project2.Controllers
                 {
                     Name = name,
                     Email = email,
+                    password = password
 
                 };
                 _dbContext.Users.Add(user);
@@ -164,11 +165,10 @@ namespace Project2.Controllers
                 {
                     Name = name,
                     phoneNumber = phonNum,
-                    AddressId = addid,
+                    //AddressId = addid,
                     userId = user.UID
                 };
 
-                // إضافة المنتج إلى قاعدة البيانات
                 _dbContext.Delivers.Add(deliver);
                 _dbContext.SaveChanges();
 
@@ -180,5 +180,7 @@ namespace Project2.Controllers
             }
 
         }
+
+
     }
 }

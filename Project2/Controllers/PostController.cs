@@ -3,6 +3,10 @@ using System.Security.Claims;
 using Microsoft.EntityFrameworkCore;
 using Project2.Model;
 using Project2.Model.Entities;
+using System.IdentityModel.Tokens.Jwt;
+using Project2.Model.Helpers;
+using Project2.Repository.Interfaces;
+using Project2.Repository.Services;
 
 namespace Project2.Controllers
 {
@@ -11,10 +15,13 @@ namespace Project2.Controllers
     public class PostController : Controller
     {
         private readonly AppDbContext _dbContext;
-
-        public PostController(AppDbContext dbContext)
+        private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly IPostServices _postServices;
+        public PostController(AppDbContext dbContext , IHttpContextAccessor httpContextAccessor , IPostServices postServices)
         {
             _dbContext = dbContext;
+            _httpContextAccessor = httpContextAccessor;
+            _postServices = postServices;
         }
         [HttpGet("post/{id}")]
         public IActionResult PostDetails(int id)
@@ -32,19 +39,50 @@ namespace Project2.Controllers
             return View(post);
         }
 
-        [HttpGet("seller/{sellerId}")]
-        public IActionResult GetSellerPosts(int sellerId)
+        [HttpGet("marketerpost")]
+        public IActionResult GetSellerPosts()
         {
             try
             {
-                var sellerPosts = _dbContext.Posts.Where(p => p.marketerId == sellerId).ToList();
-                return Ok(sellerPosts);
+                JwtSecurityTokenHandler jwtHandler = new JwtSecurityTokenHandler();
+
+                int UserId = Convert.ToInt32(jwtHandler.ReadJwtToken(_httpContextAccessor.HttpContext
+                    .Request.Headers["Authorization"].ToString().Split(" ")[1]).Claims.ToList()[0].Value);
+
+                ApiResponse response = _postServices.ViewPostForMarketer(UserId);
+
+                if (!string.IsNullOrEmpty(response.ErrorMessage) ? response.ErrorMessage != "Seccess" : false)
+                    return BadRequest(response);
+                return Ok(response);
             }
             catch (Exception ex)
             {
-                return StatusCode(StatusCodes.Status500InternalServerError, "حدث خطأ أثناء جلب المنشورات للبائع.");
+                return StatusCode(StatusCodes.Status500InternalServerError, ex +"حدث خطأ أثناء جلب المنشورات للبائع.");
             }
         }
+
+        [HttpGet("customerpost")]
+        public IActionResult GetcustomerPosts()
+        {
+            try
+            {
+                JwtSecurityTokenHandler jwtHandler = new JwtSecurityTokenHandler();
+
+                int UserId = Convert.ToInt32(jwtHandler.ReadJwtToken(_httpContextAccessor.HttpContext
+                    .Request.Headers["Authorization"].ToString().Split(" ")[1]).Claims.ToList()[0].Value);
+
+                ApiResponse response = _postServices.ViewPostForCustomer(UserId);
+
+                if (!string.IsNullOrEmpty(response.ErrorMessage) ? response.ErrorMessage != "Seccess" : false)
+                    return BadRequest(response);
+                return Ok(response);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex + "حدث خطأ أثناء جلب المنشورات للبائع.");
+            }
+        }
+
         [HttpPost("addpost")]
         public IActionResult AddPost(int marketerId, string productName, int productPrice, int productQuantity, string description)
         {
@@ -55,7 +93,7 @@ namespace Project2.Controllers
                 {
                     Name = productName,
                     Price = productPrice,
-                    Quantity = productQuantity,
+                    //Quantity = productQuantity,
                     CreatedDate = DateTime.Now
                 };
 
@@ -80,7 +118,7 @@ namespace Project2.Controllers
             }
             catch (Exception ex)
             {
-                return StatusCode(StatusCodes.Status500InternalServerError, "حدث خطأ أثناء إضافة المنتج والمنشور.");
+                return StatusCode(StatusCodes.Status500InternalServerError, ex+ "حدث خطأ أثناء إضافة المنتج والمنشور.");
             }
         }
 
@@ -107,30 +145,24 @@ namespace Project2.Controllers
             }
             catch (Exception ex)
             {
-                return StatusCode(StatusCodes.Status500InternalServerError, "حدث خطأ أثناء تحديث المنتج.");
+                return StatusCode(StatusCodes.Status500InternalServerError, ex+"حدث خطأ أثناء تحديث المنتج.");
             }
         }
 
         [HttpDelete("deletepost/{id}")]
-        public IActionResult DeletePost(int postId)
+        public IActionResult DeletePost(int id)
         {
             try
             {
-                // البحث عن المنشور المراد حذفه بواسطة الـ postId
-                var post = _dbContext.Posts.Find(postId);
+                ApiResponse response = _postServices.DeletePost(id);
 
-                if (post == null)
-                    return NotFound("المنشور غير موجود.");
-
-                // حذف المنشور من قاعدة البيانات
-                _dbContext.Posts.Remove(post);
-                _dbContext.SaveChanges();
-
-                return Ok("تم حذف المنتج بنجاح.");
+                if (!string.IsNullOrEmpty(response.ErrorMessage) ? response.ErrorMessage != "Seccess" : false)
+                    return BadRequest(response);
+                return Ok(response);
             }
             catch (Exception ex)
             {
-                return StatusCode(StatusCodes.Status500InternalServerError, "حدث خطأ أثناء حذف المنتج.");
+                return StatusCode(StatusCodes.Status500InternalServerError, ex + "حدث خطأ أثناء حذف المنتج.");
             }
         }
 

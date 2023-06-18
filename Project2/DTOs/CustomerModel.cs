@@ -1,6 +1,6 @@
-﻿namespace Project2.Model.DTOs
+﻿namespace Project2.DTOs
 {
-    public class MarketerModel
+    public class CustomerModel
     {
         public string Name { get; set; }
         public string Email { get; set; }
@@ -9,5 +9,6 @@
         public string ConfirmPassword { get; set; }
         public int AddressId { get; set; }
         public AddressModel Address { get; set; }
+        public int age { get; set; }
     }
 }

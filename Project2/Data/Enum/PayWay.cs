@@ -3,6 +3,7 @@
     public enum PayWay
     {
         Cash,
-        Epayment
+        Epayment,
+        Points
     }
 }

@@ -12,7 +12,7 @@ namespace Project2.Model.Entities
         public int customerId { get; set; }
         public int deliverId { get; set; }
         public PayWay payWay { get; set; }
-        public bool Status { get; set; }
+        public OrderStatus Status { get; set; }
         public DateTime CreatedDate { get; set; }
 
         [ForeignKey("postId")]

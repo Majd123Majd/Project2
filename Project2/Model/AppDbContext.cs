@@ -9,7 +9,6 @@ namespace Project2.Model
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
         { }
         public DbSet<User> Users { get; set; }
-        public DbSet<Address> Addresses { get; set; }
         public DbSet<Customer> Customers { get; set; }
         public DbSet<Marketer> Marketers { get; set; }
         public DbSet<Deliver> Delivers { get; set; }
@@ -54,21 +53,6 @@ namespace Project2.Model
                 .HasOne(u => u.Deliver)
                 .WithOne(d => d.User)
                 .HasForeignKey<Deliver>(d => d.userId);
-            //customer & address \\ يملك الزبون عنوان وحيد
-            modelBuilder.Entity<Customer>()
-                .HasOne(c => c.Address)
-                .WithMany()
-                .HasForeignKey(c => c.AddressId);
-            //marketer & address\\ يملك التاجر عنوان وحيد
-            modelBuilder.Entity<Marketer>()
-                .HasOne(m => m.Address)
-                .WithMany()
-                .HasForeignKey(m => m.AddressId);
-            //deliver & add\\تملك شركة التوصيل عنوان وحيد
-            modelBuilder.Entity<Deliver>()
-                .HasOne(d => d.Address)
-                .WithMany()
-                .HasForeignKey(d => d.AddressId);
             //post & markter \\ كل تاجر يستطيع انشاء منشور او اكثر
             modelBuilder.Entity<Post>()
                 .HasOne(p => p.Marketer)
@@ -175,12 +159,12 @@ namespace Project2.Model
                 .WithMany(u => u.Complaints)
                 .HasForeignKey(c => c.ComplainerId)
                 .OnDelete(DeleteBehavior.Restrict);
-            //Complaint \\ المستخدم يتلقى شكوى او اكثر
-            modelBuilder.Entity<Complaint>()
-                .HasOne(c => c.ComplainedOn)
-                .WithMany(u => u.ComplaintsAgainst)
-                .HasForeignKey(c => c.ComplainedOnId)
-                .OnDelete(DeleteBehavior.Restrict);
+            ////Complaint \\ المستخدم يتلقى شكوى او اكثر
+            //modelBuilder.Entity<Complaint>()
+            //    .HasOne(c => c.ComplainedOn)
+            //    .WithMany(u => u.ComplaintsAgainst)
+            //    .HasForeignKey(c => c.ComplainedOnId)
+            //    .OnDelete(DeleteBehavior.Restrict);
             //DelivOrder & Deliver \\تملك شركة التوصيل طلب توصيل او اكثر
             modelBuilder.Entity<DelivOrder>()
                 .HasOne(d => d.Deliver)

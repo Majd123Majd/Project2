@@ -1,6 +1,6 @@
 ﻿using Project2.Data.Enum;
 
-namespace Project2.Model.DTOs.UserDTOs
+namespace Project2.DTOs.UserDTOs
 {
     public class AddUserViewModel
     {

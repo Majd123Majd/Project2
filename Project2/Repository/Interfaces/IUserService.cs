@@ -1,11 +1,16 @@
-﻿using Project2.Model.DTOs;
-using Project2.Model.DTOs.CustomerDTOs;
+﻿using Project2.DTOs;
+using Project2.DTOs.CustomerDTOs;
+using Project2.DTOs.DeliverDTOs;
+using Project2.DTOs.MarketerDTOs;
+using Project2.Model.Helpers;
 
 namespace Project2.Repository.Interfaces
 {
     public interface IUserService
     {
-        string Login(LoginViewModel Login);
-        Task<string> RegisterForCustomer(AddCustomerViewModel NewCustomer);
+        ApiResponse Login(LoginViewModel Login);
+        Task<ApiResponse> RegisterForCustomer(AddCustomerViewModel NewCustomer);
+        Task<ApiResponse> RegisterForDeliver(AddDeliverViewModel NewDeliver);
+        Task<ApiResponse> RegisterForMarketer(AddMarketerViewModel NewMarketer);
     }
 }

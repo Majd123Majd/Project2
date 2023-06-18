@@ -1,7 +1,8 @@
 ﻿using AutoMapper;
-using Project2.Model.DTOs.CustomerDTOs;
-using Project2.Model.DTOs.DeliverDTOs;
-using Project2.Model.DTOs.UserDTOs;
+using Project2.DTOs.CustomerDTOs;
+using Project2.DTOs.DeliverDTOs;
+using Project2.DTOs.MarketerDTOs;
+using Project2.DTOs.UserDTOs;
 using Project2.Model.Entities;
 
 namespace Project2.Model.AutoMapperProfile
@@ -18,6 +19,8 @@ namespace Project2.Model.AutoMapperProfile
 
             // Deliver..
             CreateMap<Deliver, AddDeliverViewModel>().ReverseMap();
+            // Marketer..
+            CreateMap<Marketer, AddMarketerViewModel>().ReverseMap();
         }
     }
 }

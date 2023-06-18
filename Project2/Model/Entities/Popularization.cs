@@ -14,6 +14,9 @@ namespace Project2.Model.Entities
         public int marketerId { get; set; }
         [ForeignKey("Product")]
         public int productId { get; set; }
+        public string zone { get; set; }
+        public int fromAge { get; set; }
+        public int toAge { get; set; }
         public DateTime CreatedDate { get; set; }
         public Marketer Marketer { get; set; }
         public Product Product { get; set; }

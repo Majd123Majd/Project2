@@ -3,6 +3,11 @@ using System.Security.Claims;
 using Microsoft.EntityFrameworkCore;
 using Project2.Model;
 using Project2.Model.Entities;
+using System.IdentityModel.Tokens.Jwt;
+using Project2.Repository.Interfaces;
+using Project2.Model.Helpers;
+using Project2.DTOs.NotifyDTOs;
+using NuGet.Protocol.Plugins;
 
 namespace Project2.Controllers
 {
@@ -11,73 +16,94 @@ namespace Project2.Controllers
     public class NotifyController : Controller
     {
         private readonly AppDbContext _dbContext;
+        private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly INotifyServices _notifyServices;
 
-        public NotifyController(AppDbContext dbContext) {
+        public NotifyController(AppDbContext dbContext , IHttpContextAccessor httpContextAccessor = null, INotifyServices notifyServices = null)
+        {
             _dbContext = dbContext;
+            _httpContextAccessor = httpContextAccessor;
+            _notifyServices = notifyServices;
         }
-        [HttpGet("GetNotifications")]
-        //[Route("notification")]
+        [HttpGet("notifications")]
         public ActionResult GetNotifications()
         {
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            int.TryParse(userId, out int usid);
-            var notifications = _dbContext.Notifications
-                .Where(s => s.User.UID == usid)
-                .ToList();
+            JwtSecurityTokenHandler jwtHandler = new JwtSecurityTokenHandler();
 
-            if (notifications == null)
-            {
-                return NotFound();
-            }
+            int UserId = Convert.ToInt32(jwtHandler.ReadJwtToken(_httpContextAccessor.HttpContext
+                .Request.Headers["Authorization"].ToString().Split(" ")[1]).Claims.ToList()[0].Value);
 
-            return View();
+            ApiResponse response = _notifyServices.ViewNotificationsList(UserId);
+
+            if (!string.IsNullOrEmpty(response.ErrorMessage) ? response.ErrorMessage != "Seccess" : false)
+                return BadRequest(response);
+            return Ok(response);
         }
-        [HttpPost("{notification}")]
-        public async Task<ActionResult<Notification>> PostNotification(Notification notification)
+
+        [HttpPost("notifications/{id}")]
+        public async Task<ActionResult> PostNotification(int id,AddNotificationViewModel notification)
         {
-            _dbContext.Notifications.Add(notification);
-            await _dbContext.SaveChangesAsync();
+            JwtSecurityTokenHandler jwtHandler = new JwtSecurityTokenHandler();
 
-            return CreatedAtAction(nameof(GetNotifications), new { id = notification.Id }, notification);
+            int UserId = Convert.ToInt32(jwtHandler.ReadJwtToken(_httpContextAccessor.HttpContext
+                .Request.Headers["Authorization"].ToString().Split(" ")[1]).Claims.ToList()[0].Value);
+
+            ApiResponse response =  _notifyServices.AddNotification(UserId,id, notification);
+
+            if (!string.IsNullOrEmpty(response.ErrorMessage) ? response.ErrorMessage != "Seccess" : false)
+                return BadRequest(response);
+            return Ok(response);
         }
 
-        [HttpGet("SearchList")]
+        [HttpGet("Searchlist")]
         public IActionResult GetSearch()
         {
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            int.TryParse(userId, out int usid);
-            var searchResults = _dbContext.Searches
-                .Where(s => s.User.UID == usid)
-                .ToList();
+            JwtSecurityTokenHandler jwtHandler = new JwtSecurityTokenHandler();
 
-            return View(searchResults);
+            int UserId = Convert.ToInt32(jwtHandler.ReadJwtToken(_httpContextAccessor.HttpContext
+                .Request.Headers["Authorization"].ToString().Split(" ")[1]).Claims.ToList()[0].Value);
+
+            ApiResponse response = _notifyServices.ViewSearchList(UserId);
+
+            if (!string.IsNullOrEmpty(response.ErrorMessage) ? response.ErrorMessage != "Seccess" : false)
+                return BadRequest(response);
+            return Ok(response);
         }
-        [HttpPost("{search}")]
-        public async Task<ActionResult<Search>> PostSearch(Search search)
+
+        [HttpPost("Searchlist")]
+        public async Task<ActionResult> PostSearch(AddSearchViewModel search)
         {
-            _dbContext.Searches.Add(search);
-            await _dbContext.SaveChangesAsync();
+            JwtSecurityTokenHandler jwtHandler = new JwtSecurityTokenHandler();
 
-            return CreatedAtAction(nameof(GetSearch), new { id = search.Id }, search);
+            int UserId = Convert.ToInt32(jwtHandler.ReadJwtToken(_httpContextAccessor.HttpContext
+                .Request.Headers["Authorization"].ToString().Split(" ")[1]).Claims.ToList()[0].Value);
+
+            ApiResponse response = _notifyServices.AddSearch(UserId, search);
+
+            if (!string.IsNullOrEmpty(response.ErrorMessage) ? response.ErrorMessage != "Seccess" : false)
+                return BadRequest(response);
+            return Ok(response);
         }
+
         [HttpDelete("notification/{id}")]
         public IActionResult DeleteNotify(int id)
         {
             try
             {
-                var notification = _dbContext.Notifications.Find(id);
+                JwtSecurityTokenHandler jwtHandler = new JwtSecurityTokenHandler();
 
-                if (notification == null)
-                    return NotFound();
+                int UserId = Convert.ToInt32(jwtHandler.ReadJwtToken(_httpContextAccessor.HttpContext
+                    .Request.Headers["Authorization"].ToString().Split(" ")[1]).Claims.ToList()[0].Value);
 
-                _dbContext.Notifications.Remove(notification);
-                _dbContext.SaveChanges();
+                ApiResponse response = _notifyServices.DeleteNotification(UserId, id);
 
-                return Ok();
+                if (!string.IsNullOrEmpty(response.ErrorMessage) ? response.ErrorMessage != "Seccess" : false)
+                    return BadRequest(response);
+                return Ok(response);
             }
             catch (Exception ex)
             {
-                return StatusCode(StatusCodes.Status500InternalServerError, " ");
+                return StatusCode(StatusCodes.Status500InternalServerError, ex +" ");
             }
         }
 
@@ -86,19 +112,20 @@ namespace Project2.Controllers
         {
             try
             {
-                var search = _dbContext.Searches.Find(id);
+                JwtSecurityTokenHandler jwtHandler = new JwtSecurityTokenHandler();
 
-                if (search == null)
-                    return NotFound();
+                int UserId = Convert.ToInt32(jwtHandler.ReadJwtToken(_httpContextAccessor.HttpContext
+                    .Request.Headers["Authorization"].ToString().Split(" ")[1]).Claims.ToList()[0].Value);
 
-                _dbContext.Searches.Remove(search);
-                _dbContext.SaveChanges();
+                ApiResponse response = _notifyServices.DeleteSearch(UserId, id);
 
-                return Ok();
+                if (!string.IsNullOrEmpty(response.ErrorMessage) ? response.ErrorMessage != "Seccess" : false)
+                    return BadRequest(response);
+                return Ok(response);
             }
             catch (Exception ex)
             {
-                return StatusCode(StatusCodes.Status500InternalServerError, " ");
+                return StatusCode(StatusCodes.Status500InternalServerError, ex+" ");
             }
         }
 

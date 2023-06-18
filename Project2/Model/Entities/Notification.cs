@@ -7,11 +7,14 @@ namespace Project2.Model.Entities
     {
         [Key]
         public int Id { get; set; }
-        public string Title { get; set; }
-        public int userId { get; set; }
+        public string Body { get; set; }
+        public int SenderId { get; set; }
+        public int RecieverId { get; set; }
         public DateTime CreatedDate { get; set; }
 
-        [ForeignKey("userId")]
-        public User User { get; set; }
+        [ForeignKey("SenderId")]
+        public User Sender { get; set; }
+        [ForeignKey("RecieverId")]
+        public User Reciever { get; set; }
     }
 }

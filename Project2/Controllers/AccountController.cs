@@ -7,7 +7,7 @@ using Project2.Data.Enum;
 using Newtonsoft.Json;
 using Project2.Model;
 using Project2.Model.Entities;
-using Project2.Model.DTOs;
+using Project2.DTOs;
 
 namespace Project2.Controllers
 {
@@ -28,13 +28,13 @@ namespace Project2.Controllers
             _authenticationService = authenticationService;
             _dbContext = dbContext;
         }
-        [HttpPost("registertype")]
-        public IActionResult SelectUserType([FromBody] UserTypeSelectionModel model)
-        {
-            selectedUserType = model.AccountType;
-            currentStep = RegistrationStep.UserInformationInput;
-            return Ok();
-        }
+        //[HttpPost("registertype")]
+        //public IActionResult SelectUserType([FromBody] UserTypeSelectionModel model)
+        //{
+        //    selectedUserType = model.AccountType;
+        //    currentStep = RegistrationStep.UserInformationInput;
+        //    return Ok();
+        //}
         [HttpPost("register")]
         public IActionResult EnterUserInformation([FromBody] UserInformationModel model)
         {
@@ -51,14 +51,14 @@ namespace Project2.Controllers
                 var customer = new Customer
                 {
                     Name = model.Name,
-                    age = model.age,
+                    //age = model.age,
                     userId = user.UID,
                     phoneNumber = model.phoneNumber,
-                    Address = new Address
-                    {
-                        city = model.city,
-                        state = model.state
-                    }
+                   // Address = new Address
+                    
+                    city = model.city,
+                    zone = model.state
+                    
                 };
                 _dbContext.Users.Add(user);
                 _dbContext.Customers.Add(customer);
@@ -73,11 +73,10 @@ namespace Project2.Controllers
                     Name = model.Name,
                     phoneNumber = model.phoneNumber,
                     userId = user.UID,
-                    Address = new Address
-                    {
-                        city = model.city,
-                        state = model.state
-                    }
+                    
+                    city = model.city,
+                    zone = model.state
+                    
                 };
                 // قم بحفظ بيانات البائع في قاعدة البيانات
                 _dbContext.Users.Add(user);

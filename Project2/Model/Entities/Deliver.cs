@@ -9,17 +9,13 @@ namespace Project2.Model.Entities
         public int Id { get; set; }
         public string Name { get; set; }
         public int phoneNumber { get; set; }
-        public int AddressId { get; set; }
         public string? photo { get; set; }
-        public string? AccountCach { get; set; }
         public int userId { get; set; }
+        public string city { get; set; }
+        public string zone { get; set; }
         public DateTime CreatedDate { get; set; }
-
-
         [ForeignKey("userId")]
         public User User { get; set; }
-        [ForeignKey("AddressId")]
-        public Address Address { get; set; }
         public ICollection<Order> Orders { get; set; }
         public ICollection<DelivOrder> DelivOrders { get; set; }
     }

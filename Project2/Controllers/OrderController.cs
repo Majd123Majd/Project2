@@ -41,7 +41,7 @@ namespace Project2.Controllers
                         customerId = customerId,
                         deliverId = deliverId,
                         payWay = payWay,
-                        Status = false,
+                        Status = 0 ,
                         CreatedDate = DateTime.Now
                     };
 

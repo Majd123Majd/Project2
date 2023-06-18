@@ -1,4 +1,4 @@
-﻿namespace Project2.Model.DTOs
+﻿namespace Project2.DTOs
 {
     public class LoginModel
     {

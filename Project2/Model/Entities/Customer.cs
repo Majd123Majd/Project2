@@ -9,17 +9,17 @@ namespace Project2.Model.Entities
         public int Id { get; set; }
         public string Name { get; set; }
         public int phoneNumber { get; set; }
-        public int age { get; set; }
-        public int AddressId { get; set; }
+        
+        [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}", ApplyFormatInEditMode = true)]
+        [Display(Name = "Birthdate")]
+        [DataType(DataType.Date)]
+        public DateTime Birthdate { get; set; }
         public string? photo { get; set; }
-        public string? AccountCach { get; set; }
         public int? Point { get; set; }
         public int userId { get; set; }
+        public string city { get; set; }
+        public string zone { get; set; }
         public DateTime CreatedDate { get; set; }
-
-        [ForeignKey("AddressId")]
-        public Address Address { get; set; }
-
         [ForeignKey("userId")]
         public User User { get; set; }
         public ICollection<Order>? Orders { get; set; }

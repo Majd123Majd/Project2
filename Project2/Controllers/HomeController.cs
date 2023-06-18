@@ -5,7 +5,7 @@ using Project2.Data.Enum;
 using Newtonsoft.Json;
 using Project2.Model;
 using Project2.Model.Entities;
-using Project2.Model.DTOs;
+using Project2.DTOs;
 
 namespace Project2.Controllers
 {
@@ -16,7 +16,7 @@ namespace Project2.Controllers
         private readonly AppDbContext _context;
 
         [HttpGet(Name = "GetHomePage")]
-        public IActionResult Index(UserType user_Type)
+        public IActionResult Index()
         {
 
             var currentLoginModel = HttpContext.Session.GetString("CurrentLoginModel");
@@ -73,7 +73,7 @@ namespace Project2.Controllers
             {
                 posts = posts,
                 stores = marketers,
-                userType = user_Type
+               // userType = user_Type
             };
 
             return Json(response);
